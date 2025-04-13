@@ -47,4 +47,5 @@ jobs:
           --entry-point post_to_bigquery_with_timestamp \
           --region us-central1 \
           --project ${{ secrets.GCP_PROJECT_ID }} \
+          --service-account cf-post-bigquery@dev-at-cf.iam.gserviceaccount.com \
           --set-env-vars BIGQUERY_TABLE_ID=${{ secrets.BIGQUERY_TABLE_ID }},LOG_EXECUTION_ID=${{ secrets.LOG_EXECUTION_ID }}
