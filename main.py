@@ -54,6 +54,8 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         listID (str): The ID of the list.
         leadID (str, optional): The ID of the lead. Defaults to '0' if not provided.
         subscriberID (str): The ID of the subscriber.
+        leadType (str): The type of the lead.
+        source (str): The source of the lead.
     JSON Body:
         timestamp (str, optional): The timestamp of the event in a valid format. If not provided, the current date and time will be used.
     Raises:
@@ -79,6 +81,8 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         listID = params.get('listID')
         leadID = params.get('leadID', '0')
         subscriberID = params.get('subscriberID')
+        leadType = params.get('leadType')
+        source = params.get('source')
 
         request_data = request.get_json(silent=True) or {}
         timestamp = request_data.get('timestamp')
@@ -111,7 +115,9 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
             "TalkTimeFormatted": talkTimeFormatted,
             "TermReasonFormatted": termReasonFormatted,
             "SubscriberIDFormatted": subscriberIDFormatted,
-            "ListDescriptionFormatted": listDescriptionFormatted
+            "ListDescriptionFormatted": listDescriptionFormatted,
+            "LeadType": leadType,
+            "Source": source,
         }]
 
         errors = client.insert_rows_json(TABLE_ID, row_to_insert)
