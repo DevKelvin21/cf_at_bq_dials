@@ -101,6 +101,8 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         termReasonFormatted = transform_field(termReason)
         subscriberIDFormatted = transform_field(subscriberID)
         listDescriptionFormatted = transform_field(listDescription)
+        leadTypeFormatted = transform_field(leadType)
+        sourceFormatted = transform_field(source)
 
         row_to_insert = [{
             "Date": date,
@@ -116,8 +118,8 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
             "TermReasonFormatted": termReasonFormatted,
             "SubscriberIDFormatted": subscriberIDFormatted,
             "ListDescriptionFormatted": listDescriptionFormatted,
-            "LeadType": leadType,
-            "Source": source,
+            "LeadType": leadTypeFormatted,
+            "Source": sourceFormatted
         }]
 
         errors = client.insert_rows_json(TABLE_ID, row_to_insert)

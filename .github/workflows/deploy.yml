@@ -44,6 +44,7 @@ jobs:
           --runtime python311 \
           --trigger-http \
           --allow-unauthenticated \
+          --no-gen2 \
           --entry-point post_to_bigquery_with_timestamp \
           --region us-central1 \
           --project ${{ secrets.GCP_PROJECT_ID }} \
