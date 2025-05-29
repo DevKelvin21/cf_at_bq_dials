@@ -56,6 +56,11 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         subscriberID (str): The ID of the subscriber.
         leadType (str): The type of the lead.
         source (str): The source of the lead.
+        address1 (str, optional): The first line of the address.
+        city (str, optional): The city of the address.
+        state (str, optional): The state of the address.
+        zip (str, optional): The ZIP code of the address.
+        country (str, optional): The country of the address.
     JSON Body:
         timestamp (str, optional): The timestamp of the event in a valid format. If not provided, the current date and time will be used.
     Raises:
@@ -81,8 +86,13 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         listID = params.get('listID')
         leadID = params.get('leadID', '0')
         subscriberID = params.get('subscriberID')
-        leadType = params.get('leadType')
-        source = params.get('source')
+        leadType = params.get('leadType', '')
+        source = params.get('source', '')
+        address1 = params.get('address1', '')
+        city = params.get('city', '')
+        state = params.get('state', '')
+        zip_code = params.get('zip', '')
+        country = params.get('country', '')
 
         request_data = request.get_json(silent=True) or {}
         timestamp = request_data.get('timestamp')
@@ -103,6 +113,13 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
         listDescriptionFormatted = transform_field(listDescription)
         leadTypeFormatted = transform_field(leadType)
         sourceFormatted = transform_field(source)
+        address1Formatted = transform_field(address1)
+        cityFormatted = transform_field(city)
+        stateFormatted = transform_field(state)
+        zipFormatted = transform_field(zip_code)
+        countryFormatted = transform_field(country)
+
+        Address = f"{address1Formatted}, {cityFormatted}, {stateFormatted}, {zipFormatted}, {countryFormatted}".strip(", ")
 
         row_to_insert = [{
             "Date": date,
@@ -119,7 +136,8 @@ def post_to_bigquery_with_timestamp(request: Request) -> Any:
             "SubscriberIDFormatted": subscriberIDFormatted,
             "ListDescriptionFormatted": listDescriptionFormatted,
             "LeadType": leadTypeFormatted,
-            "Source": sourceFormatted
+            "Source": sourceFormatted,
+            "Address": Address
         }]
 
         errors = client.insert_rows_json(TABLE_ID, row_to_insert)
